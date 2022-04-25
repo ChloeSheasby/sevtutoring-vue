@@ -249,7 +249,7 @@ import PersonAppointmentServices from "@/services/personAppointmentServices.js"
       .then(() => {
         this.getAvailabilities()
         this.user = this.$store.state.loginUser
-        this.getGroupByName(this.user.selectedGroup.replace(/%20/g, " "))
+        await this.getGroupByName(this.user.selectedGroup.replace(/%20/g, " "))
       })
       // console.log(this.person);
       // this.getAvailabilities();
@@ -257,6 +257,7 @@ import PersonAppointmentServices from "@/services/personAppointmentServices.js"
     },
     methods: {
     async addAvailability() {
+      await this.getGroupByName(this.user.selectedGroup.replace(/%20/g, " "))
       for (var i = 0; i < this.dates.length; i++) {
         let element = this.dates[i];
         this.availability.date = element;
@@ -354,18 +355,18 @@ import PersonAppointmentServices from "@/services/personAppointmentServices.js"
           });
       }
     },
-    getGroupByName(name) {
+    async getGroupByName(name) {
       GroupServices.getGroupByName(name)
       .then((response) => {
         this.group = response.data[0]
         console.log(this.group)
-        this.getTopicsForGroup()
+        await this.getTopicsForGroup()
       })
       .catch((error) => {
         console.log("There was an error:", error.response);
       });
     },
-    getTopicsForGroup() {
+    async getTopicsForGroup() {
       TopicServices.getTopicForPerson(this.person.id)
       .then(response => {
         this.topic = response.data[0]
