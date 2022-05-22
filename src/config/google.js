@@ -1,6 +1,6 @@
 var googleAuth = (function () {
     function installClient () {
-      var apiUrl = 'https://apis.google.com/js/api.js'
+      var apiUrl = 'https://accounts.google.com/gsi/client'
       return new Promise((resolve) => {
         var script = document.createElement('script')
         script.src = apiUrl
