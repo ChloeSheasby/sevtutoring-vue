@@ -15,7 +15,7 @@
             ></v-img>
         </router-link>
             <v-toolbar-title class="title">
-                <div>{{ this.title }}</div>    
+                <div>{{ this.title }}</div>
             </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items
@@ -24,7 +24,7 @@
                 class="hidden-md-and-down"
             >
                 <v-btn
-                    exact                    
+                    exact
                     :ref="item.link"
                     link
                     :to="{ name: item.name, params: { id: currentPersonRoleID } }"
@@ -93,7 +93,7 @@
                         v-on="on"
                         v-bind="attrs"
                     >
-                        <v-avatar 
+                        <v-avatar
                             v-if="user != null"
                             color="secondary"
                         >
@@ -172,7 +172,7 @@
                 contain
             ></v-img>
             <v-toolbar-title class="title">
-                <div>{{ this.title }}</div>    
+                <div>{{ this.title }}</div>
             </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-app-bar-nav-icon
@@ -184,7 +184,7 @@
             v-if="drawer"
             class="hidden-lg-and-up"
             v-model="drawer"
-            app            
+            app
             right
             :mini-variant.sync="$vuetify.breakpoint.smAndDown"
             color="primary"
@@ -415,7 +415,7 @@ export default {
                             if (this.hasTopics) {
                                 await this.setGroupsAndRoles()
                                 .then(() => {
-                                    
+
                                     if (this.selectedGroup === '' && this.user.selectedGroup === undefined)
                                     {
                                         this.selectedGroup = this.groups[0];
@@ -438,12 +438,12 @@ export default {
                                             this.limitTutorMenu();
                                         else if (this.selectedRoles.includes("Admin"))
                                             this.limitAdminMenu();
-                                    } 
+                                    }
                                     else {
                                         this.activeMenus = this.menus.filter(menu =>
                                             menu.roles.includes('None'),
                                         );
-                                    } 
+                                    }
                                     this.menuAction(this.activeMenus[0].name);
                                 })
                             }

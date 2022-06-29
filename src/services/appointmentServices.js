@@ -9,6 +9,9 @@ export default {
     getAllForGroup(id) {
       return apiClient.get("appointment/group/" + id);
     },
+    getAppointmentHourCount(id, currWeek) {
+      return apiClient.get("appointment/group/" + id + '/hours/week/' + currWeek);
+    },
     getGoogleCalPage() {
       return apiClient.get("appointment/googlecal");
     },
