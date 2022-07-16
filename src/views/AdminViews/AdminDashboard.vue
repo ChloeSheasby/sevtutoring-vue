@@ -177,24 +177,7 @@ export default {
 
   data() {
     return {
-      series: [
-        {
-          name: "Total Hours",
-          data: [44, 55, 41, 67, 22, 43],
-        },
-        {
-          name: "Hours Available",
-          data: [44, 55, 41, 67, 22, 43],
-        },
-        {
-          name: "Hours Booked",
-          data: [44, 55, 41, 67, 22, 43],
-        },
-        {
-          name: "Hours Completed",
-          data: [44, 55, 41, 67, 22, 43],
-        },
-      ],
+      series: [],
       chartOptions: {
         chart: {
           type: "bar",
@@ -202,9 +185,6 @@ export default {
           stacked: true,
           toolbar: {
             show: true,
-          },
-          zoom: {
-            enabled: true,
           },
         },
         responsive: [
@@ -225,12 +205,7 @@ export default {
             borderRadius: 10,
           },
         },
-        xaxis: {
-          type: 'datetime',
-          categories: ['01/01/2011 GMT', '01/02/2011 GMT', '01/03/2011 GMT', '01/04/2011 GMT',
-            '01/05/2011 GMT', '01/06/2011 GMT'
-          ],
-        },
+        xaxis: {},
         legend: {
           position: "right",
           offsetY: 40,
@@ -315,8 +290,6 @@ export default {
     },
     async setWeeks() {
       await this.setWeekList();
-      var categories = "";
-
       for (let index = 0; index < this.weeklist.length; ++index) {
         var currWeek = "";
         var apptCount = "";
@@ -325,25 +298,10 @@ export default {
         var bookedCount = "";
         var completeCount = "";
 
-        var totalHourList = '{' +
-          '"name": "Total Hours",' +
-          '"data": ['
-          
-        var totalAvailableList = '{' +
-          '"name": "Total Hours",' +
-          '"data": ['
-          
-        var totalBookedList = '{' +
-          '"name": "Total Hours",' +
-          '"data": ['
-
-        var totalCompleteList = '{' +
-          '"name": "Total Hours",' +
-          '"data": ['
-
-        var totalNoShowList = '{' +
-          '"name": "Total Hours",' +
-          '"data": ['
+        var totalHourList = []
+        var totalAvailableList = []
+        var totalBookedList = []
+        var totalCompleteList = []
 
         let element = this.weeklist[index];
         await AppointmentServices.getAppointmentHourCount(
@@ -398,41 +356,53 @@ export default {
               '"}'
           )
         );
-        totalHourList += hourCount + ', '
-        totalAvailableList += availableCount + ', '
-        totalBookedList += bookedCount + ', '
-        totalCompleteList += completeCount + ', '
-        categories += '" Week Starting ' + currWeek + '",';
-
-        /*
+        totalHourList.push(hourCount)
+        totalAvailableList.push(availableCount)
+        totalBookedList.push(bookedCount)
+        totalCompleteList.push(completeCount)
         
-        console.log(categories)
-        this.series.push(
-          JSON.parse(
-            '{' +
-              '{"name": "Total Hours",' +
-                '"data": [' + hourCount + '],' +
-              '},' +
-              '{"name": "Hours Available",' +
-                '"data": [' + availableCount + '],' + 
-              '},' +
-              '{"name": "Hours Booked",' +
-                '"data": [' + bookedCount + '],' + 
-              '},' +
-              '{"name": "Hours Completed",' +
-                '"data": [' + completeCount + '],' +
-              '}' + 
-            '}'
-          )
-        );
-        */
       }
-      console.log(totalHourList)
-      /*
-      this.xaxis = JSON.parse(
-        "{" + '"type": "datetime",' + '"categories": [' + JSON.parse(categories) + "]}"
+      this.series.push(
+        JSON.parse(
+            '{' +
+              '"name": "Total Hours",' +
+              '"data": [' + await this.numifyHours(totalHourList[0]) + ', ' + await this.numifyHours(totalHourList[1]) + ', ' + await this.numifyHours(totalHourList[2]) + ']' +
+            '}'
+        )
+      )
+            
+      this.series.push(
+        JSON.parse(
+            '{' +
+              '"name": "Hours Available",' +
+              '"data": [' + await this.numifyHours(totalAvailableList[0]) + ', ' + await this.numifyHours(totalAvailableList[1]) + ', ' + await this.numifyHours(totalAvailableList[2]) + ']' + 
+            '}'
+        )
+      )
+            
+      this.series.push(
+        JSON.parse('{"' +
+              'name": "Hours Booked",' +
+              '"data": [' + await this.numifyHours(totalBookedList[0]) + ', ' + await this.numifyHours(totalBookedList[1]) + ', ' + await this.numifyHours(totalBookedList[2]) + ']' + 
+            '}'
+        )
+      )
+            
+      this.series.push(
+        JSON.parse('{' +
+              '"name": "Hours Completed",' +
+              '"data": [' + await this.numifyHours(totalCompleteList[0]) + ', ' + await this.numifyHours(totalCompleteList[1]) + ', ' + await this.numifyHours(totalCompleteList[2]) + ']' + 
+            '}'
+        )
       );
-      */
+      for (let index = 0; index < this.series.length; ++index) {
+        let element = this.series[index];
+        console.log('Series: ' + JSON.stringify(element))
+      }
+      this.xaxis = JSON.parse(
+        '{' + '"type": "category",' + '"categories": ["' +  this.weeklist[0] + '", "' + this.weeklist[1] + '", "' + this.weeklist[2] +  ' "]}'
+      );
+      
     },
     async setTutorHours() {
       await this.setWeekList();
@@ -541,6 +511,18 @@ export default {
       }
       var total = await this.toHoursAndMinutes(hours);
       return total;
+    },
+    async numifyHours(hours) {
+      if (!hours) {
+        return 0;
+      }
+      var total = await this.toHours(hours);
+      return total;
+    },
+    async toHours(totalMinutes) {
+      var hours = Math.floor(parseInt(totalMinutes) / parseFloat(60));
+
+      return hours;
     },
     async toHoursAndMinutes(totalMinutes) {
       var minutes = parseInt(totalMinutes) % 60;
