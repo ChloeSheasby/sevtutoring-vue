@@ -53,13 +53,23 @@
         <br />
         <br />
       </v-row>
-      <div id="chart">
-        <apexchart
-          type="donut"
-          :options="chartOptions"
-          :series="series"
-        ></apexchart>
-      </div>
+
+      <v-row>
+        <v-col>
+          <v-card>
+            <v-card-title>
+              Upcoming Appointment info {{ this.user.selectedGroup }}
+              <v-spacer></v-spacer>
+            </v-card-title>
+            <apexchart
+              width="500"
+              type="bar"
+              :options="chartOptions"
+              :series="series"
+            ></apexchart>
+          </v-card>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col md="4">
           <v-card
@@ -108,7 +118,7 @@
       <br />
       <v-card class="tutor">
         <v-card-title>
-          Tutor Info
+          Tutors For Week Starting {{ current_week }}
           <v-spacer></v-spacer>
         </v-card-title>
         <v-data-table
@@ -122,7 +132,7 @@
 
       <v-card class="tutor">
         <v-card-title>
-          Topic Info
+          Topics For Week Starting {{ current_week }}
           <v-spacer></v-spacer>
         </v-card-title>
         <v-data-table
@@ -134,38 +144,6 @@
       </v-card>
 
       <br /><br />
-      <v-card>
-        <v-card-title>
-          Upcoming Appointments for {{ this.user.selectedGroup }}
-          <v-spacer></v-spacer>
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Search"
-            single-line
-            hide-details
-          ></v-text-field>
-        </v-card-title>
-        <v-data-table
-          :headers="headers"
-          :search="search"
-          :items="appointments"
-          :items-per-page="50"
-        ></v-data-table>
-      </v-card>
-      <div id="app">
-        <section class="container">
-          <div class="columns">
-            <div class="column">
-              <chartjs-bar
-                :labels="labels"
-                :data="dataset"
-                :bind="true"
-              ></chartjs-bar>
-            </div>
-          </div>
-        </section>
-      </div>
     </v-container>
   </div>
 </template>
@@ -174,66 +152,7 @@
 <script src='//unpkg.com/vue-chartjs@2.6.0/dist/vue-chartjs.full.min.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.js'></script>
 <script src='//unpkg.com/hchs-vue-charts@1.2.8'></script>
-    <script >
-"use strict";
 
-Vue.use(VueCharts);
-var app = new Vue({
-  el: "#app",
-  components: {
-    apexchart: VueApexCharts,
-  },
-  data: function data() {
-    return {
-      series: [44, 55, 41, 17, 15],
-      chartOptions: {
-        chart: {
-          type: "donut",
-        },
-        responsive: [
-          {
-            breakpoint: 480,
-            options: {
-              chart: {
-                width: 200,
-              },
-              legend: {
-                position: "bottom",
-              },
-            },
-          },
-        ],
-      },
-      dataentry: null,
-      datalabel: null,
-      labels: [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-      ],
-      dataset: [5, 10, 15, 25, 45, 70, 115, 185, 70, 75, 70, 60],
-    };
-  },
-
-  methods: {
-    addData: function addData() {
-      this.dataset.push(this.dataentry);
-      this.labels.push(this.datalabel);
-      this.datalabel = "";
-      this.dataentry = "";
-    },
-  },
-});
-</script>
 <script>
 import Utils from "@/config/utils.js";
 import AppointmentServices from "@/services/appointmentServices.js";
@@ -242,6 +161,7 @@ import GroupServices from "@/services/groupServices.js";
 import RequestServices from "@/services/requestServices.js";
 import TopicServices from "@/services/topicServices.js";
 import PersonServices from "@/services/personServices.js";
+import "@/plugins/apexcharts";
 
 export default {
   props: ["id"],
@@ -251,9 +171,77 @@ export default {
       //console.log(this.id);
     },
   },
-  components: {},
+  components: {
+    //apexchart: VueApexCharts,
+  },
+
   data() {
     return {
+      series: [
+        {
+          name: "Total Hours",
+          data: [44, 55, 41, 67, 22, 43],
+        },
+        {
+          name: "Hours Available",
+          data: [44, 55, 41, 67, 22, 43],
+        },
+        {
+          name: "Hours Booked",
+          data: [44, 55, 41, 67, 22, 43],
+        },
+        {
+          name: "Hours Completed",
+          data: [44, 55, 41, 67, 22, 43],
+        },
+      ],
+      chartOptions: {
+        chart: {
+          type: "bar",
+          height: 350,
+          stacked: true,
+          toolbar: {
+            show: true,
+          },
+          zoom: {
+            enabled: true,
+          },
+        },
+        responsive: [
+          {
+            breakpoint: 480,
+            options: {
+              legend: {
+                position: "bottom",
+                offsetX: -10,
+                offsetY: 0,
+              },
+            },
+          },
+        ],
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            borderRadius: 10,
+          },
+        },
+        xaxis: {
+          type: 'datetime',
+          categories: ['01/01/2011 GMT', '01/02/2011 GMT', '01/03/2011 GMT', '01/04/2011 GMT',
+            '01/05/2011 GMT', '01/06/2011 GMT'
+          ],
+        },
+        legend: {
+          position: "right",
+          offsetY: 40,
+        },
+        fill: {
+          opacity: 1,
+        },
+      },
+      loaded: false,
+      dataentry: null,
+      datalabel: null,
       search: "",
 
       // user and group info
@@ -272,17 +260,19 @@ export default {
       requestnum: 0,
 
       // table info
+      current_week: [],
       weeklist: [],
       weeks: [],
       tutors: [],
       topics: [],
-      topicsToShow: [],
       appointments: [],
       appt_count: [],
+      available_count: [],
       hour_count: [],
       complete_count: [],
       booked_count: [],
       week: [],
+      hour_series: [],
 
       // table headers
       appointmentTable: [
@@ -293,22 +283,14 @@ export default {
         { text: "# Completed", value: "completedAppointments" },
       ],
       tutorTable: [
-        { text: "First Name", value: "fName" },
-        { text: "Last Name", value: "lName" },
-        { text: "# Appts", value: "date" },
-        { text: "# Open Hours", value: "name" },
-        { text: "# Hours Paying", value: "name" },
+        { text: "Name", value: "name" },
+        { text: "# Appts", value: "count" },
+        { text: "# Total Hours", value: "hours" },
+        { text: "# Hours to Pay", value: "paying" },
       ],
       topicTable: [
-        { text: "Week starting", value: "week" },
         { text: "Topic Name", value: "name" },
         { text: "# Hours available", value: "hours" },
-      ],
-      headers: [
-        { text: "Date", value: "date" },
-        { text: "Start Time", value: "startTime" },
-        { text: "End Time", value: "endTime" },
-        { text: "Topic", value: "topic.name" },
       ],
     };
   },
@@ -316,31 +298,81 @@ export default {
     this.user = Utils.getStore("user");
     await this.getGroup(this.user.selectedGroup.replace(/%20/g, " ")).then(
       () => {
-        this.getAppointmentsForGroup();
+        this.setWeeks();
+        this.setTutorHours();
+        this.getTopics();
         this.getRequests();
         this.getAvailabilities();
-        this.getTutors();
-        this.getTopics();
-        this.setWeeks();
       }
     );
   },
   methods: {
+    async addData() {
+      this.dataset.push(this.dataentry);
+      this.labels.push(this.datalabel);
+      this.datalabel = "";
+      this.dataentry = "";
+    },
     async setWeeks() {
       await this.setWeekList();
+      var categories = "";
 
       for (let index = 0; index < this.weeklist.length; ++index) {
+        var currWeek = "";
+        var apptCount = "";
+        var hourCount = "";
+        var availableCount = "";
+        var bookedCount = "";
+        var completeCount = "";
+
+        var totalHourList = '{' +
+          '"name": "Total Hours",' +
+          '"data": ['
+          
+        var totalAvailableList = '{' +
+          '"name": "Total Hours",' +
+          '"data": ['
+          
+        var totalBookedList = '{' +
+          '"name": "Total Hours",' +
+          '"data": ['
+
+        var totalCompleteList = '{' +
+          '"name": "Total Hours",' +
+          '"data": ['
+
+        var totalNoShowList = '{' +
+          '"name": "Total Hours",' +
+          '"data": ['
+
         let element = this.weeklist[index];
         await AppointmentServices.getAppointmentHourCount(
           this.group.id,
           element
         )
           .then((responseHour) => {
-            this.week = element.slice(0, 10);
-            this.appt_count = responseHour.data[0].count;
-            this.hour_count = responseHour.data[0].diff;
-            this.booked_count = responseHour.data[0].booked;
-            this.complete_count = responseHour.data[0].complete;
+            currWeek = element.slice(0, 10);
+            apptCount = responseHour.data[0].count;
+            hourCount = responseHour.data[0].diff;
+            availableCount = responseHour.data[0].available;
+            bookedCount = responseHour.data[0].booked;
+            completeCount = responseHour.data[0].complete;
+
+            if (index == 0) {
+              this.week = currWeek;
+              this.appt_count = apptCount;
+              this.hour_count = hourCount;
+              this.available_count = availableCount;
+              this.booked_count = bookedCount;
+              this.complete_count = completeCount;
+
+              this.hour_series = [
+                parseInt(availableCount),
+                parseInt(bookedCount),
+                parseInt(completeCount),
+              ];
+              this.loaded = true;
+            }
           })
           .catch((error) => {
             console.log(
@@ -348,23 +380,123 @@ export default {
               error.responseHour
             );
           });
+
         this.weeks.push(
           JSON.parse(
             '{"week":"' +
-              this.week +
+              currWeek +
               '", "appointmentNum": "' +
-              (await this.checkNum(this.appt_count)) +
+              (await this.checkNum(apptCount)) +
               '", "hours":"' +
-              (await this.checkHours(this.hour_count)) +
+              (await this.checkHours(hourCount)) +
+              '", "availableAppointments":"' +
+              (await this.checkHours(availableCount)) +
               '", "completedAppointments":"' +
-              (await this.checkHours(this.complete_count)) +
+              (await this.checkHours(completeCount)) +
               '", "scheduledAppointments":"' +
-              (await this.checkHours(this.booked_count)) +
+              (await this.checkHours(bookedCount)) +
               '"}'
           )
         );
-        console.log(this.weeks);
+        totalHourList += hourCount + ', '
+        totalAvailableList += availableCount + ', '
+        totalBookedList += bookedCount + ', '
+        totalCompleteList += completeCount + ', '
+        categories += '" Week Starting ' + currWeek + '",';
+
+        /*
+        
+        console.log(categories)
+        this.series.push(
+          JSON.parse(
+            '{' +
+              '{"name": "Total Hours",' +
+                '"data": [' + hourCount + '],' +
+              '},' +
+              '{"name": "Hours Available",' +
+                '"data": [' + availableCount + '],' + 
+              '},' +
+              '{"name": "Hours Booked",' +
+                '"data": [' + bookedCount + '],' + 
+              '},' +
+              '{"name": "Hours Completed",' +
+                '"data": [' + completeCount + '],' +
+              '}' + 
+            '}'
+          )
+        );
+        */
       }
+      console.log(totalHourList)
+      /*
+      this.xaxis = JSON.parse(
+        "{" + '"type": "datetime",' + '"categories": [' + JSON.parse(categories) + "]}"
+      );
+      */
+    },
+    async setTutorHours() {
+      await this.setWeekList();
+      var tutor_name = "";
+      var appt_count = "";
+      var open_hours = "";
+      var hours_paying = "";
+      var currWeek = this.current_week.slice(0, 10);
+      await PersonServices.getHoursPerTutor(this.group.id, currWeek)
+        .then((responseHour) => {
+          tutor_name =
+            responseHour.data[0].fName + " " + responseHour.data[0].lName;
+          appt_count = responseHour.data[0].appointment_count;
+          open_hours = responseHour.data[0].total_hours;
+          hours_paying = responseHour.data[0].hours_paying;
+        })
+        .catch((error) => {
+          console.log(
+            "There was an error getting hour count:",
+            error.responseHour
+          );
+        });
+      this.tutors.push(
+        JSON.parse(
+          '{"name": "' +
+            tutor_name +
+            '", "count": "' +
+            (await this.checkNum(appt_count)) +
+            '", "hours":"' +
+            (await this.checkHours(open_hours)) +
+            '", "paying":"' +
+            (await this.checkHours(hours_paying)) +
+            '"}'
+        )
+      );
+    },
+
+    async getTopics() {
+      await this.setWeekList();
+      var topic_name = "";
+      var topic_hours = "";
+      var currWeek = this.current_week.slice(0, 10);
+      await TopicServices.getHoursPerTopic(this.group.id, currWeek)
+        .then((responseHour) => {
+          topic_name = responseHour.data[0].name;
+          topic_hours = responseHour.data[0].hours;
+        })
+        .catch((error) => {
+          console.log(
+            "There was an error getting topic hour count:",
+            error.responseHour
+          );
+        });
+      this.topics.push(
+        JSON.parse(
+          '{"week":"' +
+            currWeek +
+            '", "name": "' +
+            topic_name +
+            '", "hours":"' +
+            (await this.checkHours(topic_hours)) +
+            '"}'
+        )
+      );
     },
     async getGroup(name) {
       await GroupServices.getGroupByName(name)
@@ -381,6 +513,7 @@ export default {
       var current = await this.toSQLDate(currentDate);
       var next = await this.getNextWeek(currentDate);
       this.weeklist = [prev, current, next];
+      this.current_week = current;
     },
     async getNextWeek(week) {
       var date = new Date(week.getTime() + 7 * 24 * 60 * 60 * 1000);
@@ -475,40 +608,6 @@ export default {
           console.log("There was an error:", error.response);
         });
     },
-
-    async getTopics() {
-      await this.setWeekList();
-
-      for (let index = 0; index < this.weeklist.length; ++index) {
-        let element = this.weeklist[index];
-        await TopicServices.getHoursPerTopic(this.group.id, element)
-          .then((response) => {
-            this.topics = response.data;
-            for (let index = 0; index < this.topics.length; ++index) {
-              let element = this.appointments[index];
-              var topics = 0;
-              TopicServices.getHoursPerTopic(element.id)
-                .then((result) => {
-                  topics = result.data;
-                })
-                .catch((error) => {
-                  console.log("There was an error:", error.response);
-                });
-              this.topic.push(
-                JSON.parse(
-                '{"week":"' + this.week +
-                  '", "name": "' + topics[0].name +
-                  '", "hours":"' + topics[0].hours + '"}'
-                  ))
-            }
-            
-          })
-          .catch((error) => {
-            console.log("There was an error:", error.response);
-          });
-      }
-    },
-    
     async getTutors() {
       await PersonServices.getApprovedTutorsForGroup(this.group.id)
         .then((response) => {
@@ -527,8 +626,6 @@ export default {
           console.log("There was an error:", error.response);
         });
     },
-    
-    
     async getRequests() {
       await RequestServices.getAllForGroup(this.group.id)
         .then((response) => {
@@ -544,7 +641,6 @@ export default {
               this.completerequests = this.completerequests + 1;
             }
           }
-          console.log("requests: " + JSON.stringify(response.data))
         })
         .catch((error) => {
           console.log("There was an error:", error.response);

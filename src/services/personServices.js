@@ -1,7 +1,7 @@
 import apiClient from "@/services/services.js";
 
 export default {
-  
+
     ///Persons CRUD commands
     getAllPersons() {
       return apiClient.get("person");
@@ -24,6 +24,11 @@ export default {
     getPersonForEmail(email) {
       return apiClient.get("person/email/" + email);
     },
+
+    getHoursPerTutor(groupId, currWeek){
+      return apiClient.get("person/group/" + groupId + "/hours/week/" + currWeek);
+    },
+
     addPerson(person) {
       return apiClient.post("person", person);
     },
@@ -34,4 +39,3 @@ export default {
       return apiClient.delete("person/" + personId);
     }
   };
-  
