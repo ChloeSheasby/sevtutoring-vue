@@ -6,54 +6,8 @@
         <v-spacer></v-spacer>
         <v-toolbar-title>Admin</v-toolbar-title>
       </v-toolbar>
-      <v-row justify="center">
-        <v-col md="4">
-          <v-card
-            :to="{ name: 'requestList' }"
-            class="mx-auto my-10 d-flex justify-center"
-            max-width="400"
-            height="200"
-            elevation="10"
-            color="accent"
-          >
-            <v-card-title class="justify-left white--text">
-              STUDENT REQUESTS
-              <br />
-              {{ receivedrequests }} Received <br />{{
-                inprogressrequests
-              }}
-              In-Progress <br />{{ completerequests }} Complete <br />{{
-                requestnum
-              }}
-              Total
-            </v-card-title>
-          </v-card>
-        </v-col>
-        <v-col md="4">
-          <v-card
-            :to="{ name: 'requestList' }"
-            class="mx-auto my-10 d-flex justify-center"
-            max-width="400"
-            height="200"
-            elevation="10"
-            color="accent"
-          >
-            <v-card-title class="justify-center white--text">
-              TUTOR APPLICATIONS
-              <br />
-              {{ unapprovednum }} Unapproved
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-            </v-card-title>
-          </v-card>
-        </v-col>
-        <br />
-        <br />
-      </v-row>
-
+      <br>
+      <br>
       <v-row>
         <v-col>
           <v-card>
@@ -69,53 +23,56 @@
             ></apexchart>
           </v-card>
         </v-col>
-      </v-row>
-      <v-row>
-        <v-col md="4">
-          <v-card
-            class="mx-auto my-10 d-flex justify-center"
-            elevation="10"
-            color="accent"
-          >
-            <v-card-title class="justify-left white--text">
-              View Appointment Info
-            </v-card-title>
-          </v-card> </v-col
-        ><v-col md="4">
-          <v-card
-            class="mx-auto my-10 d-flex justify-center"
-            elevation="10"
-            color="accent"
-          >
-            <v-card-title class="justify-left white--text">
-              View Tutor Info
-            </v-card-title>
-          </v-card> </v-col
-        ><v-col md="4">
-          <v-card
-            class="mx-auto my-10 d-flex justify-center"
-            elevation="10"
-            color="accent"
-          >
-            <v-card-title class="justify-left white--text">
-              View Topic Info
-            </v-card-title>
-          </v-card>
+        <v-col>
+          <v-row justify="center">
+            <v-col md="6">
+              <v-card
+                :to="{ name: 'requestList' }"
+                class="mx-auto my-10 d-flex justify-center"
+                max-width="700"
+                height="200"
+                elevation="10"
+                color="accent"
+              >
+                <v-card-title class="justify-left white--text">
+                  STUDENT REQUESTS
+                  <br />
+                  {{ receivedrequests }} Received <br />{{
+                    inprogressrequests
+                  }}
+                  In-Progress <br />{{ completerequests }} Complete <br />{{
+                    requestnum
+                  }}
+                  Total
+                </v-card-title>
+              </v-card>
+            </v-col>
+            <v-col md="6">
+              <v-card
+                :to="{ name: 'requestList' }"
+                class="mx-auto my-10 d-flex justify-center"
+                max-width="700"
+                height="200"
+                elevation="10"
+                color="accent"
+              >
+                <v-card-title class="justify-center white--text">
+                  TUTOR APPLICATIONS
+                  <br />
+                  {{ unapprovednum }} Unapproved
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                </v-card-title>
+              </v-card>
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
-      <v-card class="tutor">
-        <v-card-title>
-          Upcoming Appointment Info
-          <v-spacer></v-spacer>
-        </v-card-title>
-        <v-data-table
-          :headers="appointmentTable"
-          :search="search"
-          :items="weeks"
-          :items-per-page="50"
-        ></v-data-table>
-      </v-card>
-      <br />
+      <v-row justify="center">
+        <v-col>
       <v-card class="tutor">
         <v-card-title>
           Tutors For Week Starting {{ current_week }}
@@ -129,7 +86,8 @@
         ></v-data-table>
       </v-card>
       <br />
-
+        </v-col>
+        <v-col>
       <v-card class="tutor">
         <v-card-title>
           Topics For Week Starting {{ current_week }}
@@ -142,6 +100,8 @@
           :items-per-page="50"
         ></v-data-table>
       </v-card>
+        </v-col>
+        </v-row>
 
       <br /><br />
     </v-container>
@@ -254,8 +214,8 @@ export default {
         { text: "Week starting", value: "week" },
         { text: "# Appointments", value: "appointmentNum" },
         { text: "# Hours", value: "hours" },
-        { text: "# Scheduled", value: "scheduledAppointments" },
-        { text: "# Completed", value: "completedAppointments" },
+        { text: "# Hours Scheduled", value: "scheduledAppointments" },
+        { text: "# Hours Completed", value: "completedAppointments" },
       ],
       tutorTable: [
         { text: "Name", value: "name" },
@@ -298,10 +258,10 @@ export default {
         var bookedCount = "";
         var completeCount = "";
 
-        var totalHourList = []
-        var totalAvailableList = []
-        var totalBookedList = []
-        var totalCompleteList = []
+        var totalHourList = [];
+        var totalAvailableList = [];
+        var totalBookedList = [];
+        var totalCompleteList = [];
 
         let element = this.weeklist[index];
         await AppointmentServices.getAppointmentHourCount(
@@ -356,53 +316,85 @@ export default {
               '"}'
           )
         );
-        totalHourList.push(hourCount)
-        totalAvailableList.push(availableCount)
-        totalBookedList.push(bookedCount)
-        totalCompleteList.push(completeCount)
-        
+        totalHourList.push(hourCount);
+        totalAvailableList.push(availableCount);
+        totalBookedList.push(bookedCount);
+        totalCompleteList.push(completeCount);
       }
       this.series.push(
         JSON.parse(
-            '{' +
-              '"name": "Total Hours",' +
-              '"data": [' + await this.numifyHours(totalHourList[0]) + ', ' + await this.numifyHours(totalHourList[1]) + ', ' + await this.numifyHours(totalHourList[2]) + ']' +
-            '}'
+          "{" +
+            '"name": "Total Hours",' +
+            '"data": [' +
+            (await this.numifyHours(totalHourList[0])) +
+            ", " +
+            (await this.numifyHours(totalHourList[1])) +
+            ", " +
+            (await this.numifyHours(totalHourList[2])) +
+            "]" +
+            "}"
         )
-      )
-            
+      );
+
       this.series.push(
         JSON.parse(
-            '{' +
-              '"name": "Hours Available",' +
-              '"data": [' + await this.numifyHours(totalAvailableList[0]) + ', ' + await this.numifyHours(totalAvailableList[1]) + ', ' + await this.numifyHours(totalAvailableList[2]) + ']' + 
-            '}'
+          "{" +
+            '"name": "Hours Available",' +
+            '"data": [' +
+            (await this.numifyHours(totalAvailableList[0])) +
+            ", " +
+            (await this.numifyHours(totalAvailableList[1])) +
+            ", " +
+            (await this.numifyHours(totalAvailableList[2])) +
+            "]" +
+            "}"
         )
-      )
-            
+      );
+
       this.series.push(
-        JSON.parse('{"' +
-              'name": "Hours Booked",' +
-              '"data": [' + await this.numifyHours(totalBookedList[0]) + ', ' + await this.numifyHours(totalBookedList[1]) + ', ' + await this.numifyHours(totalBookedList[2]) + ']' + 
-            '}'
+        JSON.parse(
+          '{"' +
+            'name": "Hours Booked",' +
+            '"data": [' +
+            (await this.numifyHours(totalBookedList[0])) +
+            ", " +
+            (await this.numifyHours(totalBookedList[1])) +
+            ", " +
+            (await this.numifyHours(totalBookedList[2])) +
+            "]" +
+            "}"
         )
-      )
-            
+      );
+
       this.series.push(
-        JSON.parse('{' +
-              '"name": "Hours Completed",' +
-              '"data": [' + await this.numifyHours(totalCompleteList[0]) + ', ' + await this.numifyHours(totalCompleteList[1]) + ', ' + await this.numifyHours(totalCompleteList[2]) + ']' + 
-            '}'
+        JSON.parse(
+          "{" +
+            '"name": "Hours Completed",' +
+            '"data": [' +
+            (await this.numifyHours(totalCompleteList[0])) +
+            ", " +
+            (await this.numifyHours(totalCompleteList[1])) +
+            ", " +
+            (await this.numifyHours(totalCompleteList[2])) +
+            "]" +
+            "}"
         )
       );
       for (let index = 0; index < this.series.length; ++index) {
         let element = this.series[index];
-        console.log('Series: ' + JSON.stringify(element))
+        console.log("Series: " + JSON.stringify(element));
       }
       this.xaxis = JSON.parse(
-        '{' + '"type": "category",' + '"categories": ["' +  this.weeklist[0] + '", "' + this.weeklist[1] + '", "' + this.weeklist[2] +  ' "]}'
+        "{" +
+          '"type": "category",' +
+          '"categories": ["' +
+          this.weeklist[0] +
+          '", "' +
+          this.weeklist[1] +
+          '", "' +
+          this.weeklist[2] +
+          ' "]}'
       );
-      
     },
     async setTutorHours() {
       await this.setWeekList();
@@ -438,6 +430,7 @@ export default {
             '"}'
         )
       );
+      
     },
 
     async getTopics() {
