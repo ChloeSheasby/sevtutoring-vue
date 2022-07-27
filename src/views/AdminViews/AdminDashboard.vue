@@ -608,11 +608,11 @@ export default {
           for (let index = 0; index < this.requests.length; ++index) {
             let request = this.requests.length;
             this.requestnum = this.requestnum + 1;
-            if (request.status === "in-progress") {
+            if (request.status === "In-Progress") {
               this.inprogressrequests = this.inprogressrequests + 1;
-            } else if (request.status === "received") {
+            } else if (request.status === "Received") {
               this.receivedrequests = this.receivedrequests + 1;
-            } else if (request.status === "complete") {
+            } else if (request.status === "Complete") {
               this.completerequests = this.completerequests + 1;
             }
           }
