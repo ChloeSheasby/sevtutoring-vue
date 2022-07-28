@@ -259,10 +259,10 @@
               v-model="newStart"
               :items="startTimes"
               item-text="timeText"
-              item-value="time"
+              item-value=""
               label="Booked Start"
               required
-              @change="updateTimes()"
+              @change="updateTimes(); secondTime = true;"
               :disabled="checkRole('Tutor')"
               dense
             >
@@ -282,16 +282,16 @@
           </span>
           </v-container>
           <v-container v-if="checkStatus('available')">
-          <span v-if="appointmentType.includes('Private')">
+          <span v-if="appointmentType.includes('Private')"> <!--end time for a private appointment -->
           <v-select 
             v-model="newEnd"
             :items="endTimes"
             item-text="timeText"
-            item-value="time"
+            item-value=""
             label="Booked End"
             required
             @change="updateTimes()"
-            :disabled="checkRole('Tutor')"
+            :disabled="checkRole('Tutor') || !secondTime"
             dense
           >
           </v-select>
@@ -621,6 +621,8 @@ import Utils from '@/config/utils.js'
     allPeople : null,
     // check if date past
     datePast: false,
+    // 2nd time field abler
+    secondTime: false,
   }),
   created() {
     this.user = Utils.getStore('user')
@@ -1273,6 +1275,7 @@ import Utils from '@/config/utils.js'
         this.studentfName = ''
         this.studentlName = ''
         this.studentNameInput = false
+        this.secondTime = false;
       }
       nativeEvent.stopPropagation()
     },
